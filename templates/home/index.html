@@ -1,0 +1,113 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block title %}
+Daily motivational quotes
+{% endblock title %}
+
+{% block body %}
+
+<div class="container-fluid mt-4">
+    <div class="">
+        <div>
+            <div class="card">
+                <div class="card-header">
+                    Quote
+                </div>
+                <div class="card-body">
+                    <blockquote class="blockquote mb-0">
+                        <p>{{quote.text}}</p>
+                        <footer class="blockquote-footer">{{quote.author}}</footer>
+                    </blockquote>
+                </div>
+                <div class="mt-4 card-header text-center">
+                    <h5>Enter Your Goals Here</h5>
+                </div>
+                <div class="row">
+                    <div class="col-1 d-flex  justify-content-center align-items-center">
+                    {% if  prev_date %}
+                    <a href="?date={{prev_date.year}}-{{prev_date.month}}-{{prev_date.day}}" class="">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" class="bi bi-caret-left-fill " viewBox="0 0 16 16">
+                            <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
+                          </svg>
+                        </a>
+                        {% endif %}
+                    </div>
+                    <div class=" p-2 col-10 mt-3">
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            <input type="date" class="form-control dateInput" name='date' value="2017-12-01" hidden>
+                            <div class="d-flex justify-content-between mt-1 mb-1">
+                                <div class="fw-bold">
+                                    {{user_goal.date}}
+                                </div>
+                                <a href="calendar?year={{user_goal.date.year}}&month={{user_goal.date.month}}">
+                                    <button type="button" class="btn btn-secondary">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                            class="bi bi-calendar" viewBox="0 0 16 16">
+                                            <path
+                                                d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </a>
+                            </div>
+                            <div class="mt-4 row">
+                                <div class="col-10 text-center fw-bold">Goals</div>
+                                <div class="col-2 text-center fw-bold">Completed</div>
+                            </div>
+                            {% for i in user_goal.goals.all %}
+                            <div class="row mt-3">
+                                <input type="hidden" name="uid{{forloop.counter}}" value={{i.uid}} 
+                                {% if date_status == 'past' %}
+                                disabled
+                                {% endif %}
+                                >
+                                <div class="col-10 text-center"><input type="text" class="form-control" value="{{i.goal}}"
+                                        placeholder="Input your goal here" name="goal{{forloop.counter}}Input" 
+                                        {% if date_status == 'past' %}
+                                            disabled
+                                        {% endif %}
+                                        ></div>
+                                <div class="col-2 text-center"><input class="form-check-input" type="checkbox"
+                                        name="goal{{forloop.counter}}Check" 
+                                        {% if i.is_completed %}
+                                        checked
+                                        {% endif %}
+    
+                                        {% if date_status != 'today' %}
+                                            disabled
+                                        {% endif %}
+    
+                                        ></div>
+                            </div>
+                            {% endfor %}
+    
+                            <div class="mt-4 p-3 d-grid">
+                                <button class="btn btn-primary d" type="submit"
+                                {% if date_status == 'past' %}
+                                disabled
+                            {% endif %}
+                                >Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="col-1  d-flex justify-content-center align-items-center">
+                    <a href="?date={{next_date.year}}-{{next_date.month}}-{{next_date.day}}" class=" ">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+                                <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
+                              </svg>
+                            </a>
+                        </div>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock body %}
+
+{% block js %}
+<script src="{% static 'home/js/script.js' %}"></script>
+{% endblock js %}

@@ -1,0 +1,59 @@
+{% extends 'home/base.html' %}
+{% block css %}
+<style>
+    .tabelLink{
+        text-decoration:none;
+        color:black;
+    }
+
+</style>
+{% endblock css %}
+{% block body %}
+<div class="mt-4 mb-4 p-1">
+    <h3 class="mb-4">Monthly Report For {{month}} {{year}}</h3>
+    <table class="table table-bordered text-center ">
+        <thead>
+          <tr>
+            <th scope="col">Mon</th>
+            <th scope="col">Tues</th>
+            <th scope="col">Wednes</th>
+            <th scope="col">Thurs</th>
+            <th scope="col">Fri</th>
+            <th scope="col">Satur</th>
+            <th scope="col">Sun</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            {% for date in dates %}
+            {% if forloop.counter0|divisibleby:7 %}
+            </tr><tr>
+            
+            {% endif %}
+            {% if date.type == 'noneCompleted' %}
+            
+            <td class="table-light">{{date.date.day}}</td>
+            {% else %}
+            <td
+            class = "
+            {% if date.type == 'redCompleted' %}
+            table-danger
+            {% else %}
+            table-success
+            {% endif %}
+            "
+            >
+            <a href="{% url 'home' %}?date={{date.date.year}}-{{date.date.month}}-{{date.date.day}}" class='d-block tabelLink'>
+                    {{date.date.day}}
+                </a>    
+            </td>
+
+            {% endif %}
+            
+            {% endfor %}
+          </tr>
+         
+        </tbody>
+      </table>
+</div>
+{% endblock body %}
